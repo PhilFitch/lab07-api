@@ -1,0 +1,37 @@
+{
+  "name": "lab07-api",
+  "version": "1.0.0",
+  "description": "**Authors:** @hello-jelly and @PhilFitch **Version:** 1.0.0",
+  "main": "server.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "start:watch": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PhilFitch/lab07-api.git"
+  },
+  "keywords": [],
+  "author": "@PhilFitch & @hello-jelly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PhilFitch/lab07-api/issues"
+  },
+  "homepage": "https://github.com/PhilFitch/lab07-api#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "morgan": "^1.9.1",
+    "superagent": "^5.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.2.1",
+    "nodemon": "^1.19.1"
+  }
+}
