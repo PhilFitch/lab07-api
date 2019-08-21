@@ -8,6 +8,7 @@ const morgan = require('morgan');
 // API Service Dependecies
 const weatherApi = require('./lib/weather-api');
 const mapsApi = require('./lib/maps-api');
+const eventbriteApi = require('./lib/eventbrite-api');
 
 // Application Setup
 const app = express();
@@ -46,10 +47,23 @@ app.get('/weather', (request, response) => {
         });
 });
 
-// Yelp API Route
-
-
 // Eventbrite API Route
+app.get('/events', (request, response) => {
+    const latitude = request.query.latitude;
+    const longitude = request.query.longitude;
+
+    eventbriteApi.getEvents(latitude, longitude)
+        .then(events => {
+            response.json(events);
+        })
+        .catch(err => {
+            response.status(500).json({
+                error: err.message || err
+            });
+        });
+});
+
+// Yelp API Route
 
 
 app.listen(PORT, () => {
