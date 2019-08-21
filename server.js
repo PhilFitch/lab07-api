@@ -21,7 +21,6 @@ app.get('/location', (request, response) => {
     console.log(search);
     mapsApi.getLocation(search)
         .then(location => {
-            console.log(location);
             response.json(location);
         })
         .catch(err => {
