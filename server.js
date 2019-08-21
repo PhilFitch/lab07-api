@@ -16,11 +16,12 @@ app.use(morgan('dev'));
 app.use(cors());
 
 // Map (Google) API Route
-
 app.get('/location', (request, response) => {
     const search = request.query.search;
+    console.log(search);
     mapsApi.getLocation(search)
         .then(location => {
+            console.log(location);
             response.json(location);
         })
         .catch(err => {
@@ -31,7 +32,6 @@ app.get('/location', (request, response) => {
 });
 
 // Weather (darksky) API Route
-
 app.get('/weather', (request, response) => {
     const latitude = request.query.latitude;
     const longitude = request.query.longitude;
@@ -46,6 +46,12 @@ app.get('/weather', (request, response) => {
             });
         });
 });
+
+// Yelp API Route
+
+
+// Eventbrite API Route
+
 
 app.listen(PORT, () => {
     console.log('server running on PORT', PORT);
