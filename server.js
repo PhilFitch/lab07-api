@@ -1,17 +1,21 @@
 require('dotenv').config();
 
+// Application Dependencies
 const express = require('express');
 const cors = require('cors');
-const weatherApi = require('./lib/weather-api');
-// const mapsApi = require('./lib/maps-api');
 const morgan = require('morgan');
+
+// API Service Dependecies
+const weatherApi = require('./lib/weather-api');
+const mapsApi = require('./lib/maps-api');
+
+// Application Setup
 const app = express();
 const PORT = process.env.PORT;
-
-app.use(cors());
 app.use(morgan('dev'));
+app.use(cors());
 
-// Map (Google) Setup
+// Map (Google) API Route
 
 app.get('/location', (request, response) => {
     try {
@@ -41,7 +45,7 @@ function toLocation(/*geoData*/) {
     };
 }
 
-// Weather (darksky) Setup
+// Weather (darksky) API Route
 
 app.get('/weather', (request, response) => {
     try {
