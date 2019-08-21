@@ -10,4 +10,4 @@ This app will provide visitors to Portland with a resource to look up locations 
 What steps does a user have to take to build this app on their own machine and get it running?
 
 ##Architecture
-Javascript, Node, Dark Sky API, Google API, Nodemon Heroku and GitHub
+Javascript, Node, Dark Sky API, Google API, Yelp API, Event Brite API, Nodemon, Superagent, Cors, Morgan, Express, Heroku, and GitHub

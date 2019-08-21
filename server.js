@@ -1,95 +1,70 @@
 require('dotenv').config();
 
+// Application Dependencies
 const express = require('express');
 const cors = require('cors');
-// const weatherApi = require('./lib/weather-api');
-// const mapsApi = require('./lib/maps-api');
 const morgan = require('morgan');
+
+// API Service Dependecies
+const weatherApi = require('./lib/weather-api');
+const mapsApi = require('./lib/maps-api');
+const eventbriteApi = require('./lib/eventbrite-api');
+
+// Application Setup
 const app = express();
 const PORT = process.env.PORT;
-
-app.use(cors());
 app.use(morgan('dev'));
+app.use(cors());
 
-// geoData (map) set up
-
+// Map (Google) API Route
 app.get('/location', (request, response) => {
-    try {
-        const location = request.query.location;
-        const result = getLatLng(location);
-        response.status(200).json(result);
-    } catch(err) {
-        response.status(500).send('Sorry, something went wrong. Please try again');
-    }
+    const search = request.query.search;
+    console.log(search);
+    mapsApi.getLocation(search)
+        .then(location => {
+            response.json(location);
+        })
+        .catch(err => {
+            response.status(500).json({
+                error: err.message || err
+            });
+        });
 });
 
-const geoData = require('./data/geo.json');
-
-function getLatLng(/*location*/) {
-    //api call will go here
-    return toLocation(geoData);
-}
-
-function toLocation(/*geoData*/) {
-    const firstResult = geoData.results[0];
-    const geometry = firstResult.geometry;
-    
-    return {
-        formatted_query: firstResult.formatted_address,
-        latitude: geometry.location.lat,
-        longitude: geometry.location.lng
-    };
-}
-
-// darksky (weather) setup
-
+// Weather (darksky) API Route
 app.get('/weather', (request, response) => {
-    try {
-        const location = request.query.location;
-        const result = getForecastTime(location);
-        response.status(200).json(result);
-    } catch(err) {
-        response.status(500).send('Sorry, something went wrong. Please try again');
-    }
+    const latitude = request.query.latitude;
+    const longitude = request.query.longitude;
+
+    weatherApi.getForecast(latitude, longitude)
+        .then(forecast => {
+            response.json(forecast);
+        })
+        .catch(err => {
+            response.status(500).json({
+                error: err.message || err
+            });
+        });
 });
 
-const darkSky = require('./data/darksky.json');
+// Eventbrite API Route
+app.get('/events', (request, response) => {
+    const latitude = request.query.latitude;
+    const longitude = request.query.longitude;
 
-function getForecastTime(/*location*/) {
-    //api call will go here
-    return toWeather(darkSky);
-}
+    eventbriteApi.getEvents(latitude, longitude)
+        .then(events => {
+            response.json(events);
+        })
+        .catch(err => {
+            response.status(500).json({
+                error: err.message || err
+            });
+        });
+});
 
-function toWeather(/*darkSky*/) {
-    const firstResult = geoData.results[0];
-    
-    return [{
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[0].summary,
-        time: darkSky.daily.data[0].time
-    },
-    {
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[1].summary,
-        time: darkSky.daily.data[1].time
-    },
-    {
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[2].summary,
-        time: darkSky.daily.data[2].time
-    },
-    {
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[3].summary,
-        time: darkSky.daily.data[3].time
-    },
-    {
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[4].summary,
-        time: darkSky.daily.data[4].time
-    }
-    ];
-}
+// Yelp API Route
+
 
 app.listen(PORT, () => {
     console.log('server running on PORT', PORT);
