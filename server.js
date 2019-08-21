@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-// const weatherApi = require('./lib/weather-api');
+const weatherApi = require('./lib/weather-api');
 // const mapsApi = require('./lib/maps-api');
 const morgan = require('morgan');
 const app = express();
@@ -11,7 +11,7 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(morgan('dev'));
 
-// geoData (map) set up
+// Map (Google) Setup
 
 app.get('/location', (request, response) => {
     try {
@@ -41,54 +41,33 @@ function toLocation(/*geoData*/) {
     };
 }
 
-// darksky (weather) setup
+// Weather (darksky) Setup
 
 app.get('/weather', (request, response) => {
     try {
-        const location = request.query.location;
-        const result = getForecastTime(location);
+        const weather = request.query.weather;
+        const result = getForecast(weather);
         response.status(200).json(result);
-    } catch(err) {
-        response.status(500).send('Sorry, something went wrong. Please try again');
     }
+
+    catch(err) {
+        // TODO: make an object and send via .json...
+        response.status(500).send('Sorry something went wrong, please try again');
+    }
+
 });
 
-const darkSky = require('./data/darksky.json');
+function getForecast() {
+    const forecast = [];
 
-function getForecastTime(/*location*/) {
-    //api call will go here
-    return toWeather(darkSky);
-}
-
-function toWeather(/*darkSky*/) {
-    const firstResult = geoData.results[0];
-    
-    return [{
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[0].summary,
-        time: darkSky.daily.data[0].time
-    },
-    {
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[1].summary,
-        time: darkSky.daily.data[1].time
-    },
-    {
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[2].summary,
-        time: darkSky.daily.data[2].time
-    },
-    {
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[3].summary,
-        time: darkSky.daily.data[3].time
-    },
-    {
-        formatted_query: firstResult.formatted_address,
-        forecast: darkSky.daily.data[4].summary,
-        time: darkSky.daily.data[4].time
+    for(let i = 0; i < weatherApi.daily.data.length; i++) {
+        const dailyForecast = {
+            forecast: weatherApi.daily.data[i].summary,
+            time: weatherApi.daily.data[i].time
+        };
+        forecast.push(dailyForecast);
     }
-    ];
+    return forecast;
 }
 
 app.listen(PORT, () => {
